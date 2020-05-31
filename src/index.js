@@ -22,6 +22,12 @@ app.use(cors())
 app.get("/pizza", (req, res) => {
   return res.send({ pizzaBase, pizzaSauce, pizzaTopping })
 })
+app.get("/extras", (req, res) => {
+  return res.send({ extras })
+})
+app.get("/services", (req, res) => {
+  return res.send({ services })
+})
 
 // Server start
 app.listen(port, () =>
