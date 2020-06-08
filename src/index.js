@@ -2,6 +2,7 @@
 const express = require("express")
 const cors = require("cors")
 const User = require("./models/userModel")
+const bcrypt = require("bcrypt")
 
 // import modules from resources.js. Destructure them in the import itself, instead of fist assigning them to a variable and only after that destructure them.
 const {
@@ -30,18 +31,34 @@ app.get("/services", (req, res) => {
   return res.send({ services })
 })
 app.post("/register", async (req, res) => {
-  const username = req.body.username
-  const password = req.body.password
-
   try {
-    const user = await User.create({ username, password })
-    if (!user) {
-      return res.send("Saving a new user is unsuccessful.")
+    const username = req.body.username
+    const password = req.body.password
+
+    const isExistingUser = await User.findOne({ where: { username } })
+
+    if (
+      isExistingUser &&
+      isExistingUser.dataValues &&
+      isExistingUser.dataValues.id
+    ) {
+      return res.send({ warning: "Username already exists. Please log in." })
     }
-    // console.log("user????", user.dataValues)
+
+    const hashedPassword = bcrypt.hashSync(password, 10)
+
+    const isCreatedUser = await User.create({
+      username,
+      password: hashedPassword,
+    })
+
+    if (!isCreatedUser) {
+      return res.send({ error: "Saving a new user is unsuccessful." })
+    }
+
     return res.send({ success: "Saving a new user is successful." })
   } catch (error) {
-    return res.send("Saving a new user is unsuccessful.")
+    return res.send({ error })
   }
 })
 
