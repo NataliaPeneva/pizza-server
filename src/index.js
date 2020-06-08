@@ -1,6 +1,7 @@
 // Imports
 const express = require("express")
 const cors = require("cors")
+const User = require("./models/userModel")
 
 // import modules from resources.js. Destructure them in the import itself, instead of fist assigning them to a variable and only after that destructure them.
 const {
@@ -27,6 +28,21 @@ app.get("/extras", (req, res) => {
 })
 app.get("/services", (req, res) => {
   return res.send({ services })
+})
+app.post("/register", async (req, res) => {
+  const username = req.body.username
+  const password = req.body.password
+
+  try {
+    const user = await User.create({ username, password })
+    if (!user) {
+      return res.send("Saving a new user is unsuccessful.")
+    }
+    // console.log("user????", user.dataValues)
+    return res.send({ success: "Saving a new user is successful." })
+  } catch (error) {
+    return res.send("Saving a new user is unsuccessful.")
+  }
 })
 
 // Server start
