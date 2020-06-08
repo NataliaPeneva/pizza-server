@@ -20,7 +20,7 @@ app.use(cors())
 
 // Endpoints
 app.get("/pizza", (req, res) => {
-  return res.send({ pizzaBase, pizzaSauce, pizzaTopping })
+  return res.send({ pizza: [...pizzaBase, ...pizzaSauce, ...pizzaTopping] })
 })
 app.get("/extras", (req, res) => {
   return res.send({ extras })
