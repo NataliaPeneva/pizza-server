@@ -32,15 +32,30 @@ app.use(express.json())
 app.use(cors())
 
 // Endpoints
-app.get("/pizza", (req, res) => {
-  return res.send({ pizza: [...pizzaBase, ...pizzaSauce, ...pizzaTopping] })
+app.get("/pizza", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization
+    const authHeaderSplit = authHeader.split(" ")
+
+    const token = authHeaderSplit[1]
+    const jwtData = toData(token)
+
+    const userId = jwtData.userId
+    const user = await User.findByPk(userId)
+    console.log("user:", user.dataValues)
+    return res.send({ pizza: [...pizzaBase, ...pizzaSauce, ...pizzaTopping] })
+  } catch (error) {
+    return res.send({ error })
+  }
 })
+
 app.get("/extras", (req, res) => {
   return res.send({ extras })
 })
 app.get("/services", (req, res) => {
   return res.send({ services })
 })
+
 app.post("/register", async (req, res) => {
   try {
     const username = req.body.username
