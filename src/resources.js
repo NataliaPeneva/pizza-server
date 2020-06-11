@@ -11,6 +11,10 @@ const pizzaBase = [
     name: "Extra crust base",
     price: 8,
   },
+  {
+    name: "Cauliflower crust",
+    price: 10,
+  },
 ]
 
 const pizzaSauce = [
